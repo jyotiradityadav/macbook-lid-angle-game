@@ -47,12 +47,20 @@ check_dependencies() {
         exit 1
     fi
     
-    if ! brew list glfw &> /dev/null; then
-        log_error "GLFW not found. Please run: brew install glfw"
-        exit 1
+    # Check for GLFW in common locations
+    GLFW_FOUND=false
+    if [ -f "/opt/homebrew/include/GLFW/glfw3.h" ] || [ -f "/usr/local/include/GLFW/glfw3.h" ] || [ -f "/usr/include/GLFW/glfw3.h" ]; then
+        GLFW_FOUND=true
     fi
     
-    log_success "All dependencies found"
+    if [ "$GLFW_FOUND" = false ]; then
+        log_warning "GLFW not found in standard locations. Attempting to build anyway..."
+        log_info "If build fails, install GLFW with: brew install glfw"
+    else
+        log_success "GLFW found"
+    fi
+    
+    log_success "Dependencies check complete"
 }
 
 # Clean previous builds
@@ -69,8 +77,25 @@ build_executable() {
     
     # Compiler flags for release build
     CXXFLAGS="-std=c++14 -O3 -DNDEBUG -Wall -Wextra -flto"
-    INCLUDES="-I../mac-angle -I/opt/homebrew/include"
-    LIBS="-framework OpenGL -framework Cocoa -framework IOKit -L/opt/homebrew/lib -lglfw"
+    
+    # Flexible include paths
+    INCLUDES="-I../mac-angle"
+    if [ -d "/opt/homebrew/include" ]; then
+        INCLUDES="$INCLUDES -I/opt/homebrew/include"
+    elif [ -d "/usr/local/include" ]; then
+        INCLUDES="$INCLUDES -I/usr/local/include"
+    fi
+    
+    # Flexible library paths
+    LIBS="-framework OpenGL -framework Cocoa -framework IOKit"
+    if [ -d "/opt/homebrew/lib" ]; then
+        LIBS="$LIBS -L/opt/homebrew/lib -lglfw"
+    elif [ -d "/usr/local/lib" ]; then
+        LIBS="$LIBS -L/usr/local/lib -lglfw"
+    else
+        LIBS="$LIBS -lglfw"
+    fi
+    
     SOURCES="src/LidPong.cpp src/Sensor.cpp ../mac-angle/angle.cpp"
     
     # Build with optimization
@@ -125,9 +150,13 @@ create_app_bundle() {
 </plist>
 EOF
     
-    # Copy resources
-    cp README.md "$RESOURCES_DIR/"
-    cp CONTRIBUTING.md "$RESOURCES_DIR/"
+    # Copy resources (from parent directory since they were moved)
+    if [ -f "../README.md" ]; then
+        cp ../README.md "$RESOURCES_DIR/"
+    fi
+    if [ -f "../CONTRIBUTING.md" ]; then
+        cp ../CONTRIBUTING.md "$RESOURCES_DIR/"
+    fi
     
     log_success "App bundle created: $BUNDLE_DIR"
 }
@@ -144,8 +173,12 @@ create_distribution() {
     # Create standalone executable ZIP
     mkdir -p "standalone"
     cp "../$BUILD_DIR/$APP_NAME" "standalone/"
-    cp "../README.md" "standalone/"
-    cp "../CONTRIBUTING.md" "standalone/"
+    if [ -f "../README.md" ]; then
+        cp ../README.md "standalone/"
+    fi
+    if [ -f "../CONTRIBUTING.md" ]; then
+        cp ../CONTRIBUTING.md "standalone/"
+    fi
     zip -r "$APP_NAME-v$VERSION-standalone.zip" "standalone/"
     rm -rf "standalone"
     
