@@ -1,0 +1,26 @@
+# Lid Pong Docker Ignore File
+
+# Build artifacts
+lid-pong
+*.o
+build/
+
+# Development files
+.git/
+.gitignore
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Documentation (copied separately)
+# README.md is copied explicitly in Dockerfile
+
+# IDE files
+.vscode/
+.idea/
+*.xcodeproj/
+
+# Temporary files
+*.tmp
+*.log
