@@ -1,0 +1,57 @@
+# Build directories
+build/
+Build/
+cmake-build-*/
+
+# CMake cache files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+!MacBookLidAngleConfig.cmake.in
+
+# Compiled binaries
+*.a
+*.so
+*.dylib
+*.exe
+lid_angle_example
+benchmark
+
+# IDE files
+.vscode/
+.idea/
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Compiler output
+*.o
+*.obj
+*.d

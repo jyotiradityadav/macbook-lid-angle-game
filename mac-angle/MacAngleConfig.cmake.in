@@ -1,0 +1,14 @@
+# MacBookLidAngle CMake configuration file
+
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find required dependencies
+find_dependency(IOKit)
+find_dependency(CoreFoundation)
+
+# Include the exported targets
+include("${CMAKE_CURRENT_LIST_DIR}/MacAngleTargets.cmake")
+
+check_required_components(MacAngle)
