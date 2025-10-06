@@ -12,9 +12,6 @@ A unique Pong-style game that uses your MacBook's lid angle sensor as the primar
 - **Game Over Modal**: Clear game over screen with restart option
 - **Cross-platform Ready**: Designed for easy deployment
 
-## Screenshots 📸
-
-*Game in action with lid angle control and clean UI*
 
 ## Requirements 📋
 
